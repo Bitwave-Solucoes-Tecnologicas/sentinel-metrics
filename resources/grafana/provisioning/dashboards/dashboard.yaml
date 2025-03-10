@@ -1,0 +1,38 @@
+apiVersion: 1
+providers:
+
+  - name: 'Docker Container'
+    org_id: 1
+    folder: 'Logs'
+    type: 'file'
+    disable_delete: false
+    update_interval: '10s'
+    options:
+      path: /etc/grafana/dashboards/docker-logs.json
+
+  - name: 'Cadvisor Exporter'
+    org_id: 1
+    folder: 'Exporter'
+    type: 'file'
+    disable_delete: false
+    update_interval: '10s'
+    options:
+      path: /etc/grafana/dashboards/cadvisor-exporter.json
+
+  - name: 'Node Exporter'
+    org_id: 1
+    folder: 'Exporter'
+    type: 'file'
+    disable_delete: false
+    update_interval: '10s'
+    options:
+      path: /etc/grafana/dashboards/node-export.json
+
+  - name: 'Blackbox Exporter'
+    org_id: 1
+    folder: 'Exporter'
+    type: 'file'
+    disable_delete: false
+    update_interval: '10s'
+    options:
+      path: /etc/grafana/dashboards/blackbox-exporter.json

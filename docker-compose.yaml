@@ -1,0 +1,116 @@
+services:
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.26.0
+    container_name: blackbox-exporter
+    ports:
+      - "9115:9115"
+    networks:
+      - internal
+    restart: unless-stopped
+
+  node_exporter:
+    container_name: node-exporter
+    image: prom/node-exporter:v1.9.0
+    ports:
+      - "9100:9100"
+    networks:
+      - internal
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: cadvisor
+    privileged: true
+    ports:
+      - "8080:8080"
+    networks:
+      - internal
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+
+  promtail:
+    image: grafana/promtail:3.4.2
+    container_name: promtail
+    command: 
+      - "--config.file=/etc/promtail/config.yaml"
+    ports:
+      - "9080:9080"
+    networks:
+      - internal
+    volumes:
+      - /var/log:/var/log:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./resources/promtail/config.yaml:/etc/promtail/config.yaml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+
+  loki:
+    image: grafana/loki:3.4.2
+    container_name: loki
+    command: 
+      - "--config.file=/etc/loki/config.yaml"
+    ports:
+      - "3100:3100"
+    networks:
+      - internal
+    volumes:
+      - ./resources/loki/config.yaml:/etc/loki/config.yaml:ro
+    depends_on:
+      - promtail
+
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    container_name: prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+    ports:
+      - "9090:9090"
+    networks:
+      - internal
+    volumes:
+      - ./resources/prometheus:/etc/prometheus:ro
+    depends_on:
+      - node_exporter
+      - cadvisor
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: alertmanager
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yaml"
+    ports:
+      - "9093:9093"
+    networks:
+      - internal
+    volumes:
+      - ./resources/alertmanager:/etc/alertmanager:ro
+    depends_on:
+      - prometheus
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - "3000:3000"
+    networks:
+      - internal
+    volumes:
+      - grafana-storage:/var/lib/grafana:rw
+      - ./resources/grafana/provisioning/dashboards:/etc/grafana/dashboards:ro
+      - ./resources/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+      - loki
+
+networks:
+  internal:
+
+volumes:
+  grafana-storage:

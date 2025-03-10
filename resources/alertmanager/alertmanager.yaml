@@ -1,0 +1,13 @@
+route:
+  group_by: ['alertname']
+  receiver: 'default'
+  repeat_interval: 1h
+
+receivers:
+  - name: 'default'
+    email_configs:
+      - to: 'your-email@example.com'
+        from: 'alertmanager@example.com'
+        smarthost: 'smtp.example.com:587'
+        auth_username: 'user'
+        auth_password: 'password'
