@@ -41,4 +41,4 @@ scrape_configs:
         replacement: blackbox-exporter:9115
 
 rule_files:
-  - /etc/prometheus/alert.rules.yaml
+  - /etc/prometheus/rules/*.rules.yaml

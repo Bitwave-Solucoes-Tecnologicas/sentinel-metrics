@@ -17,4 +17,8 @@ O sentinel metrics é composto por 8 componentes principais:
 - **Prometheus**: é o responsável por coletar as métricas dos Node Exporters e armazená-las. Ele também é responsável por disponibilizar essas métricas para visualização em dashboards.
 - **Blackbox Exporter**: é o responsável por coletar métricas de serviços externos, como APIs, websites, etc.
 - **Alertmanager**: é o responsável por gerenciar alertas. Ele é capaz de receber alertas do Prometheus e enviá-los para diferentes canais, como Slack, Email, etc.
-- - **Grafana**: é a ferramenta de visualização de métricas. Ela é responsável por se conectar ao Prometheus e exibir as métricas em dashboards.
+- **Grafana**: é a ferramenta de visualização de métricas. Ela é responsável por se conectar ao Prometheus e exibir as métricas em dashboards.
+
+
+## Referências
+[Awesome Prometheus alerts](https://samber.github.io/awesome-prometheus-alerts)
