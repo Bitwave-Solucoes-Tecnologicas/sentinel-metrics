@@ -1,13 +1,15 @@
 route:
   group_by: ['alertname']
-  receiver: 'default'
+  receiver: 'telegram'
   repeat_interval: 1h
 
 receivers:
-  - name: 'default'
-    email_configs:
-      - to: 'your-email@example.com'
-        from: 'alertmanager@example.com'
-        smarthost: 'smtp.example.com:587'
-        auth_username: 'user'
-        auth_password: 'password'
+  - name: 'telegram'
+    telegram_configs:
+      - bot_token: 'xxxxxxxxxxxxxxxxxxxx'
+        chat_id: -000000000
+        parse_mode: "MarkdownV2"
+        message: '{{ template "telegram.alert_list" . }}'
+
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
