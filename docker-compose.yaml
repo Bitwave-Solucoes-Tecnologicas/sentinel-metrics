@@ -86,6 +86,8 @@ services:
       - "9093:9093"
     networks:
       - internal
+    env_file:
+      - .env
     volumes:
       - ./resources/alertmanager:/etc/alertmanager:ro
     depends_on:

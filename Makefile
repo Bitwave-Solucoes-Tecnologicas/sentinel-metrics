@@ -94,6 +94,13 @@ build:
 rebuild:
 	$(CMAKE) build options="--no-cache $(options)"
 
+prepare:
+	envsubst < ./resources/alertmanager/templates/alertmanager.yaml.template > ./resources/alertmanager/alertmanager.yaml
+
+deploy:
+	$(CMAKE) prepare
+	$(CMAKE) up
+
 up:
 	docker compose --file $(DOCKER_COMPOSE_FILE) up --detach
 

@@ -1,2 +1,3 @@
 # IGNORE ENVIRONMENT FILES
 .env
+resources/alertmanager/alertmanager.yaml

@@ -6,8 +6,8 @@ route:
 receivers:
   - name: 'telegram'
     telegram_configs:
-      - bot_token: 'xxxxxxxxxxxxxxxxxxxx'
-        chat_id: -000000000
+      - bot_token: $BOT_TOKEN
+        chat_id: $CHAT_ID
         parse_mode: "MarkdownV2"
         message: '{{ template "telegram.alert_list" . }}'
 
