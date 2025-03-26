@@ -26,6 +26,6 @@ jobs:
 
             cd "$REPOSITORY_PATH"
             git pull origin main
+            envsubst < ./resources/alertmanager/templates/alertmanager.yaml.template > ./resources/alertmanager/alertmanager.yaml
             docker compose -f docker-compose.yaml down
             docker compose -f docker-compose.yaml up -d
-
