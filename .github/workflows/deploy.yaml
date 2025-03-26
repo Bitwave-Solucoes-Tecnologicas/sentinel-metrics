@@ -10,6 +10,9 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
       - name: Acessar Servidor e Executar Deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -24,9 +27,10 @@ jobs:
               git clone https://github.com/olliveirajr/sentinel-metrics.git "$REPOSITORY_PATH"
             fi
 
+            cp ./.env.example ./.env
+            envsubst '${{ secrets.BOT_TOKEN }} ${{ secrets.CHAT_ID }}' < ./resources/alertmanager/templates/alertmanager.yaml.template > ./resources/alertmanager/alertmanager.yaml
+
             cd "$REPOSITORY_PATH"
             git pull origin main
-            env
-            envsubst < ./resources/alertmanager/templates/alertmanager.yaml.template > ./resources/alertmanager/alertmanager.yaml
             docker compose -f docker-compose.yaml down
-            docker compose -f docker-compose.yaml up -d
+            docker compose -f docker-compose.yaml up -d --build
