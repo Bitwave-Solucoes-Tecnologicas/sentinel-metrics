@@ -1,0 +1,31 @@
+name: Deploy Remoto via SSH
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Acessar Servidor e Executar Deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: "${{ secrets.HOST }}"
+          username: "${{ secrets.USERNAME }}"
+          key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          port: "${{ secrets.PORT }}"
+          script: |
+            REPOSITORY_PATH="${{ secrets.REPOSITORY_PATH }}/sentinel-metrics"
+            
+            if [ ! -d "$REPOSITORY_PATH/.git" ]; then
+              git clone https://github.com/olliveirajr/sentinel-metrics.git "$REPOSITORY_PATH"
+            fi
+
+            cd "$REPOSITORY_PATH"
+            git pull origin main
+            docker compose -f docker-compose.yaml down
+            docker compose -f docker-compose.yaml up -d
+
